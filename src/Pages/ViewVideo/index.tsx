@@ -8,20 +8,30 @@ import { IoMdDownload } from 'react-icons/io';
 import { HiOutlineSave } from 'react-icons/hi';
 import { useParams } from 'react-router-dom';
 import API from '../../Utils/AxiosInterceptor/Api';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
+import { VideosType } from '../VideosList';
 
 const ViewVideo = () => {
 
     const { id: videoId } = useParams()
-    console.log(videoId);
 
-    const { data:videoData } = useSuspenseQuery({
+    const { data: videoData } = useSuspenseQuery({
         queryKey: ['video', videoId],
         queryFn: async () => {
             const response = await API.get(`/feeds/get-video-details?feed_id=${videoId}`);
             return response?.data?.data
         }
     })
+
+    const fetchVideos = async () => {
+        const response = await API.get(`/feeds/get-videos`);
+        return response?.data;
+    };
+
+    const { data: videosData } = useQuery({
+        queryKey: ['videos-list'],
+        queryFn: () => fetchVideos(),
+    });
 
     return (
         <Container className="mt-4">
@@ -59,14 +69,14 @@ const ViewVideo = () => {
                         </CardBody>
                     </Card>
                 </Col>
-                <Col md="4">
-                    {[1, 2, 3, 4].map((video, index) => (
+                <Col md="4" className='overflow-auto vh-100' style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                    {videosData?.data?.results?.data?.map((video: VideosType, index: number) => (
                         <Card key={index} className="mb-3 mt-0">
-                            <CardImg width="100%" src={`https://placehold.co/600x400/orange/white`} alt={`Video ${video}`} />
+                            <CardImg width="100%" src={video?.thumbnail || `https://placehold.co/600x400/orange/white`} alt={`Video ${video}`} />
                             <CardBody>
-                                <CardTitle tag="h6">Related Video {video}</CardTitle>
-                                <CardText>Channel Name</CardText>
-                                <CardText>{timeAgo(new Date().toISOString())}</CardText>
+                                <CardTitle tag="h6">Related Video {video?.title}</CardTitle>
+                                <CardText>{video?.channel_name}</CardText>
+                                <CardText>{timeAgo(video?.created_date)}</CardText>
                             </CardBody>
                         </Card>
                     ))}

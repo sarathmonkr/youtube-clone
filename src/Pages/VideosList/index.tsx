@@ -6,7 +6,7 @@ import { Fragment, useEffect, useState } from 'react';
 import VideoCard from '../../Components/VideoList/VideoCard';
 import { useSearchContext } from '../../Utils/Contexts/searchContext';
 
-interface VideosType {
+export interface VideosType {
     id: number;
     channel_name: string;
     thumbnail: string;
