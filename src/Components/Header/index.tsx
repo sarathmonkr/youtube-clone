@@ -32,43 +32,43 @@ const Header = () => {
     }
 
     return (
-        <Navbar color="light" light expand="md" className="header">
+        <Navbar color="light" light expand="md" className="header sticky-top">
             <RouterNavLink to="/" className="navbar-brand">
-                <NavbarBrand>
-                    <img
-                        src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg"
-                        alt="YouTube Logo"
-                        className="youtube-logo"
-                    />
-                </NavbarBrand>
+            <NavbarBrand>
+                <img
+                src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg"
+                alt="YouTube Logo"
+                className="youtube-logo"
+                />
+            </NavbarBrand>
             </RouterNavLink>
             <NavbarToggler onClick={toggle} />
             <Collapse isOpen={isOpen} navbar>
-                <InputGroup className="search-bar mx-auto">
-                    <form onSubmit={handleSearchSubmit}>
-                        <Input placeholder="Search" value={searchText} onChange={handleSearchChange} />
-                    </form>
-                    <InputGroupText onClick={() => handleSearchSubmit({ preventDefault: () => { } } as React.FormEvent<HTMLFormElement>)}>
-                        <FaSearch />
-                    </InputGroupText>
-                </InputGroup>
-                <Nav className="ml-auto" navbar>
-                    <NavItem>
-                        <NavLink href="#">
-                            <FaVideo />
-                        </NavLink>
-                    </NavItem>
-                    <NavItem>
-                        <NavLink href="#">
-                            <FaBell />
-                        </NavLink>
-                    </NavItem>
-                    <NavItem>
-                        <NavLink href="#">
-                            <FaUserCircle />
-                        </NavLink>
-                    </NavItem>
-                </Nav>
+            <InputGroup className="search-bar mx-auto">
+                <form onSubmit={handleSearchSubmit}>
+                <Input placeholder="Search" value={searchText} onChange={handleSearchChange} />
+                </form>
+                <InputGroupText onClick={() => handleSearchSubmit({ preventDefault: () => { } } as React.FormEvent<HTMLFormElement>)} >
+                <FaSearch />
+                </InputGroupText>
+            </InputGroup>
+            <Nav className="ml-auto" navbar>
+                <NavItem>
+                <NavLink href="#">
+                    <FaVideo />
+                </NavLink>
+                </NavItem>
+                <NavItem>
+                <NavLink href="#">
+                    <FaBell />
+                </NavLink>
+                </NavItem>
+                <NavItem>
+                <NavLink href="#">
+                    <FaUserCircle />
+                </NavLink>
+                </NavItem>
+            </Nav>
             </Collapse>
         </Navbar>
     );
