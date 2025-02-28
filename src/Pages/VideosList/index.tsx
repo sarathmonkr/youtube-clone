@@ -1,4 +1,4 @@
-import { Container, Row } from 'reactstrap';
+import { Container, Row, Col } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useQuery } from '@tanstack/react-query';
 import API from '../../Utils/AxiosInterceptor/Api';
@@ -20,14 +20,13 @@ const VideosList = () => {
     const [videos, setVideos] = useState<VideosType[]>([]);
     const [page, setPage] = useState(1);
     const [isLoadingMore, setIsLoadingMore] = useState(false);
-    console.log("searchValue", searchValue);
 
     const fetchVideos = async (page: number, searchValue: string) => {
         const response = await API.get(`/feeds/get-videos?page=${page}&search=${searchValue}`);
         return response?.data;
     };
 
-    const { data: videosData } = useQuery({
+    const { data: videosData, isLoading } = useQuery({
         queryKey: ['videos-list', page, searchValue],
         queryFn: () => fetchVideos(page, searchValue),
     });
@@ -49,7 +48,7 @@ const VideosList = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, [isLoadingMore]);
 
-    useEffect(() => {
+    useEffect(() => {        
         if (isLoadingMore) {
             fetchVideos(page, searchValue).then(newVideos => {
                 setVideos(prevVideos => [...prevVideos, ...newVideos.data.results.data]);
@@ -66,18 +65,25 @@ const VideosList = () => {
     return (
         <Container fluid>
             <Row>
-                {videos.map(video => (
-                    <Fragment key={video.id}>
-                        <VideoCard
-                            id={video?.id}
-                            channelName={video?.channel_name}
-                            thumbnail={video?.thumbnail || "https://placehold.co/600x400/orange/white"}
-                            title={video?.title}
-                            uploadTime={video?.created_date}
-                            views={"2.3K"}
-                        />
-                    </Fragment>
-                ))}
+                {(videos.length === 0 && !isLoading && videosData?.data?.results?.data?.length ===0) ? (
+                    <Col className="text-center my-5">
+                        <h4>No videos available</h4>
+                        <p>Try adjusting your search or check back later.</p>
+                    </Col>
+                ) : (
+                    videos.map(video => (
+                        <Fragment key={video.id}>
+                            <VideoCard
+                                id={video?.id}
+                                channelName={video?.channel_name}
+                                thumbnail={video?.thumbnail || "https://placehold.co/600x400/orange/white"}
+                                title={video?.title}
+                                uploadTime={video?.created_date}
+                                views={"2.3K"}
+                            />
+                        </Fragment>
+                    ))
+                )}
             </Row>
         </Container>
     );
